@@ -1,0 +1,10 @@
+Index, Name, ApiKeyRequired, ApiKey, LookupFunction
+1, "Barcode of Life", 0,NULL,"bold_search"
+2, "ITIS", 0, NULL,"get_example"
+3, "GBIF", 1, "dfhjkdhf","gbif_parse"
+4, "EOL", 1, "nmsdfbn","eol_search" 
+5, "NCBI", 0, NULL,"tax_name"
+6, "IPNI", 0, NULL,"ipni_search"
+7, "NBN", 0, NULL,"nbn_search"
+8, "Index Fungorum", 0, NULL,"fg_name_search"
+9, "EU BON", 0, NULL,"eubon_search"
