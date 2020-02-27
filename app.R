@@ -1,8 +1,11 @@
 library(taxize)
 library(shiny)
+source("taxize_if.R")
+
 # Define UI ----
 ui <- fluidPage(
   titlePanel("Welcome to Taxize"),
+  
   
   sidebarLayout(position = "left",
     sidebarPanel(
@@ -14,40 +17,61 @@ ui <- fluidPage(
         ),
         column(3,
           h3("Fuzzy Lookup"),
-          actionButton("fuzzyLookup", "Resolve Names"),
+          actionButton("fuzzyLookup", "Resolve Names")
         ),
         column(5,
-          checkboxGroupInput("dataSources", 
+          radioButtons("dataSources", 
             h3("Data Sources to lookup"), 
-            choices = list("Barcode of Life" = 1, 
-              "COL" = 2, 
-              "TNRS" = 3),
-            selected = 1
+            choiceNames = DBNames,
+            choiceValues = DBIndexes,
+            selected = 0
           )
         )
       ),
       fluidRow(
         column(3,
                h3("DB Lookup"),
-               actionButton("dbLookup", "DB Lookup"),
+               actionButton("dbLookup", "DB Lookup")
         )
       )
     ),
     mainPanel(
       width="7",
-      tableOutput("lookupResultsTable")
-    )
+      fluidRow(
+        h3("Results of Lookup"),
+        tableOutput("lookupResultsTable")
+      ),
+      fluidRow(
+        h3("Resolved Names"),
+        tableOutput("resolvedNames")
+      )
+    ),
   )
 )
 
 # Define server logic ----
 server <- function(input, output) {
+    
   ans = eventReactive(input$dbLookup, {
-    names <- unlist(strsplit(input$namesList,"\n"))
-    #taxize call
-    cat(file=stderr(), "input list is ", names, "\n")
-    bold_search(name=names, fuzzy=TRUE)
+    speciesNames <- unlist(strsplit(input$namesList,"\n"))
+    #for loop if permitting lookup for multiple DBs and collating
+    #for (i in input$dataSources) {
+      cat(file=stderr(), " Selected source ", DBNames[as.integer(input$dataSources)], "Lookup function = " , DBLookupFunctions[as.integer(input$dataSources)], " \n")
+      #check if API key required, if yes, if available
+      searchFunction = match.fun(DBLookupFunctions[as.integer(input$dataSources)])
+      #taxize call
+      do.call(searchFunction, list(speciesNames))
+    #}
   })
+  
+  observeEvent(input$fuzzyLookup , {
+    speciesNames <- unlist(strsplit(input$namesList,"\n"))
+    resolved_frames = gnr_resolve(name=speciesNames)
+    output$resolvedNames <- renderTable({
+      resolved_frames
+    })
+  })
+  
   observeEvent(input$dbLookup, {
     output$lookupResultsTable <- renderTable({ 
       ans()
