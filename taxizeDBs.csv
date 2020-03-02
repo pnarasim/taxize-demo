@@ -1,10 +1,13 @@
-Index, Name, ApiKeyRequired, ApiKey, LookupFunction
-1, "Barcode of Life", 0,NULL,"bold_search"
-2, "ITIS", 0, NULL,"get_example"
-3, "GBIF", 1, "dfhjkdhf","gbif_parse"
-4, "EOL", 1, "nmsdfbn","eol_search" 
-5, "NCBI", 0, NULL,"tax_name"
-6, "IPNI", 0, NULL,"ipni_search"
-7, "NBN", 0, NULL,"nbn_search"
-8, "Index Fungorum", 0, NULL,"fg_name_search"
-9, "EU BON", 0, NULL,"eubon_search"
+Index,Name,ApiKeyRequired,EnvVar,LookupFunction, TaxonColumn
+1,"Barcode of Life",0,"","bold_search","taxon"
+2,"NCBI",0,"","tax_name"
+3,"ITIS",0,"","get_example"
+4,"GBIF",1,"GBIF_KEY","gbif_parse",canonicalnamecomplete
+5,"EOL",1,"EOL_KEY","eol_search"
+6,"IPNI",0,"","ipni_search"
+7,"NBN",0,"","nbn_search"
+8,"Index Fungorum",0,"","fg_name_search"
+9,"EU BON",0,"","eubon_search"
+10,"Tropicos",1,"TROPICOS_KEY","tol_search"
+11,"IUCN Redlist",1,"IUCN_REDLIST_KEY","iucn_search"
+12,"Entrez",1,"ENTREZ_KEY","entrez_search"
